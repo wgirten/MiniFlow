@@ -17,3 +17,15 @@ class Node(object):
         Calculates the output value, given the values from the inbound Nodes.
         """
         raise NotImplemented
+
+
+class Input(Node):
+    def __init__(self):
+        # An Input Node will have no inbound Nodes.
+        Node.__init__(self)
+
+    def forward(self, value=None):
+        # Since an Input Node has no inbound Nodes,
+        # it will not have to calculate an output value.
+        if value is not None:
+            self.value = value
