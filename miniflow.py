@@ -32,13 +32,23 @@ class Input(Node):
 
 
 class Add(Node):
-    def __init__(self, x, y):
-        Node.__init__(self, [x, y])
+    def __init__(self, *inputs):
+        Node.__init__(self, inputs)
 
     def forward(self):
-        x = self.inbound_nodes[0].value
-        y = self.inbound_nodes[1].value
-        self.value = x + y
+        self.value = 0  # initialize output value
+        for n in self.inbound_nodes:
+            self.value += n.value
+
+
+class Multiply(Node):
+    def __init__(self, *inputs):
+        Node.__init__(self, inputs)
+
+    def forward(self):
+        self.value = 0  # initialize output value
+        for n in self.inbound_nodes:
+            self.value *= n.value
 
 
 def topological_sort(feed_dict):
