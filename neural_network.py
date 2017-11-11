@@ -4,39 +4,18 @@ Builds and runs a graph with MiniFlow.
 import numpy as np
 from miniflow import *
 
-# Define 2 Input Nodes
-x, y, z = Input(), Input(), Input()
+# Calculate Mean Squared Error (MSE)
+y, a = Input(), Input()
+cost = MSE(y, a)
 
-# Define an Add Node with the 2 above Input Nodes being the input
-add = Add(x, y, z)
+y_ = np.array([1, 2, 3])
+a_ = np.array([4.5, 5, 10])
 
-# The value of x and y Input Nodes
-feed_dict = {x: 4, y: 5, z: 10}
-
-# Sort the nodes using topological sort
-graph = topological_sort(feed_dict=feed_dict)
-output = forward_pass(add, graph)
-
-print("{} + {} + {} = {} (according to MiniFlow)".format(feed_dict[x], feed_dict[y], feed_dict[z], output))
-
-# Define inputs, weights, and biases matrices
-X, W, b = Input(), Input(), Input()
-
-f = Linear(X, W, b)
-g = Sigmoid(f)
-
-X_ = np.array([[-1., -2.], [-1, -2]])
-W_ = np.array([[2., -3], [2., -3]])
-b_ = np.array([-3., -5])
-
-feed_dict2 = {X: X_, W: W_, b: b_}
-graph2 = topological_sort(feed_dict2)
-output2 = forward_pass(g, graph2)
+feed_dict = {y: y_, a: a_}
+graph = topological_sort(feed_dict)
+forward_pass(graph)
 
 """
-Output should be:
-[[  1.23394576e-04   9.82013790e-01]
- [  1.23394576e-04   9.82013790e-01]]
+Expected cost: 23.4166666667
 """
-print('Linear Transform => Sigmoid activation:')
-print(output2)
+print("Network Cost: {}".format(cost.value))

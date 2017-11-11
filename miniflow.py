@@ -82,6 +82,25 @@ class Sigmoid(Node):
         self.value = self._sigmoid(x)
 
 
+class MSE(Node):
+    def __init__(self, y, a):
+        """
+        The mean squared error cost function.
+        Should be used as the last node for a network.
+        """
+        Node.__init__(self, [y, a])
+
+    def forward(self):
+        """
+        Calculates the mean squared error.
+        """
+        # Re-shape both arrays to be (3,1) and ensures element-wise subtraction as expected.
+        y = self.inbound_nodes[0].value.reshape(-1, 1)
+        a = self.inbound_nodes[1].value.reshape(-1, 1)
+        m = y.shape[0]
+        self.value = np.sum((1. / m) * np.square((y - a)))
+
+
 def topological_sort(feed_dict):
     """
     Sorts generic Nodes in topological order using Kahn's Algorithm.
@@ -125,15 +144,12 @@ def topological_sort(feed_dict):
     return L
 
 
-def forward_pass(output_node, sorted_nodes):
+def forward_pass(graph):
     """
     Performs a forward pass through a list of sorted nodes.
 
-    :param output_node: A Node in the graph that represents the output (no outgoing edges).
-    :param sorted_nodes: A topologically sorted list of nodes.
-    :return: The calculated output Node's value.
+    :param graph: A topologically sorted list of nodes.
+    :return: None
     """
-    for n in sorted_nodes:
+    for n in graph:
         n.forward()
-
-    return output_node.value
