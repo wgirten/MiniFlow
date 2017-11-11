@@ -1,6 +1,7 @@
 """
 Builds and runs a graph with MiniFlow.
 """
+import numpy as np
 from miniflow import *
 
 # Define 2 Input Nodes
@@ -18,18 +19,23 @@ output = forward_pass(add, graph)
 
 print("{} + {} + {} = {} (according to MiniFlow)".format(feed_dict[x], feed_dict[y], feed_dict[z], output))
 
-# Define 3 Input Nodes which will create a Linear Node
-inputs, weights, bias = Input(), Input(), Input()
+# Define inputs, weights, and biases matrices
+X, W, b = Input(), Input(), Input()
 
-linear = Linear(inputs, weights, bias)
+f = Linear(X, W, b)
 
-feed_dict2 = {
-    inputs: [6, 14, 3],
-    weights: [0.5, 0.25, 1.4],
-    bias: 2
-}
+X_ = np.array([[-1., -2.], [-1, -2]])
+W_ = np.array([[2., -3], [2., -3]])
+b_ = np.array([-3., -5])
 
+feed_dict2 = {X: X_, W: W_, b: b_}
 graph2 = topological_sort(feed_dict2)
-output2 = forward_pass(linear, graph2)
+output2 = forward_pass(f, graph2)
 
-print("Linear Node output: {}".format(output2))
+"""
+Output should be:
+[[-9., 4.],
+[-9., 4.]]
+"""
+print('Linear Node output:')
+print(output2)
